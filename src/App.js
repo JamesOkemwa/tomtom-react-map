@@ -26,6 +26,14 @@ function App() {
       const element = document.createElement("div");
       element.className = "marker";
 
+      const popupOffset = {
+        bottom: [0, -25],
+      }
+
+      const popup = new tt.Popup({
+        offset: popupOffset
+      }).setHTML("This is you")
+
       const marker = new tt.Marker({
         draggable: true,
         element: element,
@@ -38,7 +46,9 @@ function App() {
         setLongitude(lngLat.lng)
         setLatitude(lngLat.lat)
       })
-      
+
+      marker.setPopup(popup).togglePopup()
+
     };
     addMarker();
 
