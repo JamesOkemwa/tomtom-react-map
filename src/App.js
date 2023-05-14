@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import "./App.css";
 import * as tt from "@tomtom-international/web-sdk-maps";
+import "./App.css";
+import "@tomtom-international/web-sdk-maps/dist/maps.css"
 
 function App() {
   const mapElement = useRef();
@@ -31,6 +32,13 @@ function App() {
       })
         .setLngLat([longitude, latitude])
         .addTo(map)
+
+      marker.on('dragend', () => {
+        const lngLat = marker.getLngLat()
+        setLongitude(lngLat.lng)
+        setLatitude(lngLat.lat)
+      })
+      
     };
     addMarker();
 
