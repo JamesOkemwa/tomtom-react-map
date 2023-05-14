@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
-import './App.css';
-import * as tt from "@tomtom-international/web-sdk-maps"
+import { useEffect, useRef, useState } from "react";
+import "./App.css";
+import * as tt from "@tomtom-international/web-sdk-maps";
 
 function App() {
-  const mapElement = useRef()
-  const [ latitude, setLatitude ] = useState(-1.2921)
-  const [ longitude, setLongitude ] = useState(36.8218)
-  const [ map, setMap ] = useState({})
+  const mapElement = useRef();
+  const [latitude, setLatitude] = useState(-1.2921);
+  const [longitude, setLongitude] = useState(36.8218);
+  const [map, setMap] = useState({});
 
   useEffect(() => {
     let map = tt.map({
@@ -14,17 +14,26 @@ function App() {
       container: mapElement.current,
       stylesVisibility: {
         trafficIncidents: true,
-        trafficFlow: true
+        trafficFlow: true,
       },
       center: [longitude, latitude],
-      zoom: 14
-    })
+      zoom: 14,
+    });
+    setMap(map);
 
-    setMap(map)
+    const addMarker = () => {
+      const element = document.createElement("div");
+      element.className = "marker";
 
-    return () => map.remove()
+      const marker = new tt.Marker({
+        draggable: true,
+        element: element,
+      }).setLngLat([longitude, latitude]);
+    };
+    addMarker();
 
-  }, [latitude, longitude])
+    return () => map.remove();
+  }, [latitude, longitude]);
 
   return (
     <div className="App">
@@ -35,16 +44,20 @@ function App() {
           type="text"
           id="longitude"
           className="longitude"
-          placeholder='Put in the longitude'
-          onChange={(e) => {setLongitude(e.target.value)}}
+          placeholder="Put in the longitude"
+          onChange={(e) => {
+            setLongitude(e.target.value);
+          }}
         />
 
         <input
           type="text"
           id="latitude"
           className="latitude"
-          placeholder='Put in the latitude'
-          onChange={(e) => {setLatitude(e.target.value)}}
+          placeholder="Put in the latitude"
+          onChange={(e) => {
+            setLatitude(e.target.value);
+          }}
         />
       </div>
     </div>
