@@ -28,7 +28,9 @@ function App() {
       const marker = new tt.Marker({
         draggable: true,
         element: element,
-      }).setLngLat([longitude, latitude]);
+      })
+        .setLngLat([longitude, latitude])
+        .addTo(map)
     };
     addMarker();
 
