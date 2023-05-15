@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import * as tt from "@tomtom-international/web-sdk-maps";
+import * as ttapi from "@tomtom-international/web-sdk-services";
 import "./App.css";
 import "@tomtom-international/web-sdk-maps/dist/maps.css"
 
@@ -9,7 +10,33 @@ function App() {
   const [longitude, setLongitude] = useState(36.8218);
   const [map, setMap] = useState({});
 
+  const origin = {
+    lng: longitude,
+    lat: latitude
+  }
+
+  const convertToPoints = (lngLat) => {
+    return {
+      point: {
+        latitude: lngLat.lat,
+        longitude: lngLat.lng
+      }
+    }
+  }
+
+  const addDeliveryMarker = (lngLat, map) => {
+    const element = document.createElement('div')
+    element.className = 'marker-delivery'
+    new tt.Marker({
+      element: element
+    })
+      .setLngLat(lngLat)
+      .addTo(map)
+  }
+
   useEffect(() => {
+    const destinations = []
+
     let map = tt.map({
       key: process.env.REACT_APP_TOM_TOM_API_KEY,
       container: mapElement.current,
@@ -51,6 +78,24 @@ function App() {
 
     };
     addMarker();
+
+    // Matrix Routing
+    // const pointsForDestinations = locations.map
+
+    // const callParameters = {
+    //   key: process.env.REACT_APP_TOM_TOM_API_KEY,
+    //   destinations: pointsForDestinations,
+    //   origins: [convertToPoints(origin)]
+    // }
+
+    // return new Promise((resolve,reject) => {
+    //   ttapi.services.matrixRouting(callParameters)
+    // })
+
+    map.on('click', (e) => {
+      destinations.push(e.lngLat)
+      addDeliveryMarker(e.lngLat, map)
+    })
 
     return () => map.remove();
   }, [latitude, longitude]);

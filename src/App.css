@@ -22,3 +22,9 @@ body {
   border-radius: 11px;
   border: solid 3px darkslategray;
 }
+
+.marker-delivery {
+  background-color: red;
+  width: 22px;
+  height: 22px;
+}
