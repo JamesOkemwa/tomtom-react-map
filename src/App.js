@@ -10,11 +10,6 @@ function App() {
   const [longitude, setLongitude] = useState(36.8218);
   const [map, setMap] = useState({});
 
-  const origin = {
-    lng: longitude,
-    lat: latitude
-  }
-
   const convertToPoints = (lngLat) => {
     return {
       point: {
@@ -22,6 +17,25 @@ function App() {
         longitude: lngLat.lng
       }
     }
+  }
+
+  const drawRoute = (geoJson, map) => {
+    if (map.getLayer('route')) {
+      map.removeLayer('route')
+      map.removeSource('route')
+    }
+    map.addLayer({
+      id: 'route',
+      type: 'line',
+      source: {
+        type: 'geojson',
+        data: geoJson
+      },
+      paint: {
+        'line-color': 'blue',
+        'line-width': 5
+      }
+    })
   }
 
   const addDeliveryMarker = (lngLat, map) => {
@@ -35,6 +49,10 @@ function App() {
   }
 
   useEffect(() => {
+    const origin = {
+      lng: longitude,
+      lat: latitude
+    }
     const destinations = []
 
     let map = tt.map({
@@ -97,7 +115,7 @@ function App() {
             const results = matrixAPIResults.matrix[0]
             const resultsArray = results.map((result, index) => {
               return {
-                location: locations[0],
+                location: locations[index],
                 drivingTime: result.response.routeSummary.travelTimeInSeconds,
               }
             })
@@ -112,10 +130,28 @@ function App() {
       })
     }
 
+    const recalculateRoutes = () => {
+      sortDestinations(destinations).then((sorted) => {
+        sorted.unshift(origin)
+
+        ttapi.services
+          .calculateRoute({
+            key: process.env.REACT_APP_TOM_TOM_API_KEY,
+            locations: sorted,
+          })
+          .then((routeData) => {
+            console.log({routeData})
+            const geoJson = routeData.toGeoJson()
+            drawRoute(geoJson, map)
+          })
+      })
+    }
+
     // Add markers to the map when clicked
     map.on('click', (e) => {
       destinations.push(e.lngLat)
       addDeliveryMarker(e.lngLat, map)
+      recalculateRoutes()
     })
 
     return () => map.remove();
