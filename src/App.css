@@ -28,4 +28,15 @@ body {
   width: 22px;
   height: 22px;
   border-radius: 11px;
+  position: relative;
+}
+
+.marker-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
 }

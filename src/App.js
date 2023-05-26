@@ -38,9 +38,16 @@ function App() {
     })
   }
 
-  const addDeliveryMarker = (lngLat, map) => {
+  const addDeliveryMarker = (lngLat, map, order) => {
     const element = document.createElement('div')
     element.className = 'marker-delivery'
+
+    const label = document.createElement('div')
+    label.className = 'marker-label'
+    label.textContent = order.toString()
+
+    element.appendChild(label)
+
     new tt.Marker({
       element: element
     })
@@ -140,9 +147,14 @@ function App() {
             locations: sorted,
           })
           .then((routeData) => {
-            console.log({routeData})
             const geoJson = routeData.toGeoJson()
             drawRoute(geoJson, map)
+            
+            sorted.forEach((location, index) => {
+              if (index !== 0) {
+                addDeliveryMarker(location, map, index)
+              }
+            })
           })
       })
     }
@@ -150,7 +162,7 @@ function App() {
     // Add markers to the map when clicked
     map.on('click', (e) => {
       destinations.push(e.lngLat)
-      addDeliveryMarker(e.lngLat, map)
+      // addDeliveryMarker(e.lngLat, map)
       recalculateRoutes()
     })
 
