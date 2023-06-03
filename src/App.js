@@ -8,6 +8,7 @@ function App() {
   const mapElement = useRef();
   const [latitude, setLatitude] = useState(-1.2921);
   const [longitude, setLongitude] = useState(36.8218);
+  const [ userLOcation, setUserLocation ] = useState(null)
   const [map, setMap] = useState({});
 
   const convertToPoints = (lngLat) => {
