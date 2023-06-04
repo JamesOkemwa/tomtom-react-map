@@ -8,7 +8,7 @@ function App() {
   const mapElement = useRef();
   const [latitude, setLatitude] = useState(-1.2921);
   const [longitude, setLongitude] = useState(36.8218);
-  const [ userLOcation, setUserLocation ] = useState(null)
+  const [ userLocation, setUserLocation ] = useState(null)
   const [map, setMap] = useState({});
 
   const convertToPoints = (lngLat) => {
@@ -76,6 +76,17 @@ function App() {
     setMap(map);
 
     const addMarker = () => {
+      // fetch user's location and put a marker there
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const { latitude, longitude } = position.coords
+          setLatitude(latitude)
+          setLongitude(longitude)
+          setUserLocation({lat: latitude, lng: longitude})
+        })
+      }
+
       const element = document.createElement("div");
       element.className = "marker";
 
